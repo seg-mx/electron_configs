@@ -114,6 +114,23 @@ impl AsSubshells for ChemicalElement {
             }
         }
 
+        // These are exceptions for some elements that are unstable
+        let last = items
+            .pop()
+            .expect("Elements should have at least one subshell");
+
+        if last.kind == 'f' && last.period >= 4 {
+            if last.value > 1 {
+                items.push(Subshell::new(last.kind, last.period, last.value - 1));
+            } else {
+                items.push(Subshell::new('d', last.period + 1, last.value));
+            }
+        } else if last.kind == 'd' && last.value == 1 && last.period >= 5 {
+            // Last item should be removed but that's already done
+        } else {
+            items.push(last);
+        }
+
         Subshells { items }
     }
 }
